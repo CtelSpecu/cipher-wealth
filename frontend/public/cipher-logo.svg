@@ -1,0 +1,9 @@
+<svg width="140" height="40" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="2" y="8" width="24" height="24" rx="4" fill="black" stroke="black" stroke-width="2"/>
+  <path d="M14 14L14 26M10 20L18 20" stroke="#FFD200" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="14" cy="14" r="1.5" fill="#FFD200"/>
+  <circle cx="14" cy="26" r="1.5" fill="#FFD200"/>
+  <circle cx="10" cy="20" r="1.5" fill="#FFD200"/>
+  <circle cx="18" cy="20" r="1.5" fill="#FFD200"/>
+  <text x="32" y="26" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="black">Cipher Wealth</text>
+</svg>

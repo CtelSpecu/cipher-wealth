@@ -68,12 +68,8 @@ export function useCipherWealth({
   const cipherWealth = useMemo(() => {
     const info = getCipherWealthByChainId(chainId);
     cipherWealthRef.current = info;
-    // Only show message if chainId is defined but contract is not deployed
-    if (chainId && !info.address) {
-      setMessage(`CipherWealth deployment not found for chainId=${chainId}.`);
-    } else if (!chainId) {
-      setMessage("");
-    }
+    // Clear message - don't show deployment errors in the UI
+    setMessage("");
     return info;
   }, [chainId]);
 

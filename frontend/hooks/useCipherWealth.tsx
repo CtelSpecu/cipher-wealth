@@ -68,16 +68,21 @@ export function useCipherWealth({
   const cipherWealth = useMemo(() => {
     const info = getCipherWealthByChainId(chainId);
     cipherWealthRef.current = info;
-    if (!info.address) {
+    // Only show message if chainId is defined but contract is not deployed
+    if (chainId && !info.address) {
       setMessage(`CipherWealth deployment not found for chainId=${chainId}.`);
+    } else if (!chainId) {
+      setMessage("");
     }
     return info;
   }, [chainId]);
 
   const isDeployed = useMemo(() => {
     if (!cipherWealth) return null;
+    // Return null if chainId is not yet known (wallet not connected)
+    if (!chainId) return null;
     return Boolean(cipherWealth.address) && cipherWealth.address !== ethers.ZeroAddress;
-  }, [cipherWealth]);
+  }, [cipherWealth, chainId]);
 
   const canGetBalance = Boolean(
     instance &&

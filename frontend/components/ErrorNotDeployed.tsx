@@ -1,38 +1,48 @@
 export function errorNotDeployed(chainId: number | undefined) {
+  const getNetworkName = (id: number | undefined) => {
+    if (id === 11155111) return "Sepolia";
+    if (id === 31337) return "Localhost (Hardhat)";
+    return id ? `Chain ${id}` : "Unknown Network";
+  };
+
   return (
-    <div className="grid w-full gap-4 mx-auto font-semibold bg-none">
-      <div className="col-span-full mx-20">
-        <p className="text-4xl leading-relaxed">
-          {" "}
-          <span className="font-mono bg-red-500">Error</span>:{" "}
-          <span className="font-mono bg-white">FHECounter.sol</span> Contract
-          Not Deployed on{" "}
-          <span className="font-mono bg-white">chainId={chainId}</span>{" "}
-          {chainId === 11155111 ? "(Sepolia)" : ""} or Deployment Address
-          Missing.
-        </p>
-        <p className="text-xl leading-relaxed mt-8">
-          It appears that the{" "}
-          <span className="font-mono bg-white">FHECounter.sol</span> contract
-          has either not been deployed yet, or the deployment address is missing
-          from the ABI directory{" "}
-          <span className="font-mono bg-white">root/packages/site/abi</span>. To
-          deploy <span className="font-mono bg-white">FHECounter.sol</span> on
-          Sepolia, run the following command:
-        </p>
-        <p className="font-mono text-2xl leading-relaxed bg-black text-white p-4 mt-12">
-          <span className="opacity-50 italic text-red-500">
-            #from &lt;root&gt;/packages/fhevm-hardhat-template
-          </span>
-          <br />
-          npx hardhat deploy --network{" "}
-          {chainId === 11155111 ? "sepolia" : "your-network-name"}
-        </p>
-        <p className="text-xl leading-relaxed mt-12">
-          Alternatively, switch to the local{" "}
-          <span className="font-mono bg-white">Hardhat Node</span> using the
-          MetaMask browser extension.
-        </p>
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-card border border-destructive/50 rounded-xl p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-full bg-destructive/10 flex items-center justify-center">
+            <span className="text-2xl">⚠️</span>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground">Contract Not Available</h2>
+            <p className="text-sm text-muted-foreground">
+              {getNetworkName(chainId)} • Chain ID: {chainId ?? "undefined"}
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4 text-muted-foreground">
+          <p>
+            The <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-foreground">CipherWealth</span> contract 
+            is not deployed on this network, or the deployment address is not configured.
+          </p>
+
+          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+            <p className="font-medium text-foreground">To use this app:</p>
+            <ul className="list-disc list-inside space-y-1 text-sm">
+              <li>Switch to <span className="font-semibold">Localhost (31337)</span> if running a local Hardhat node</li>
+              <li>Or deploy the contract to your current network</li>
+            </ul>
+          </div>
+
+          {chainId === 31337 && (
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+              <p className="text-sm text-foreground">
+                <span className="font-semibold">Localhost detected:</span> Make sure your Hardhat node is running 
+                and the contract is deployed with <code className="bg-muted px-1 rounded">npx hardhat deploy --network localhost</code>
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

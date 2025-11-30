@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useFhevm } from "../fhevm/useFhevm";
 import { useInMemoryStorage } from "../hooks/useInMemoryStorage";
 import { useMetaMaskEthersSigner } from "../hooks/metamask/useMetaMaskEthersSigner";
+import { useEnsureSepoliaRpc } from "../hooks/metamask/useEnsureSepoliaRpc";
 import { useCipherWealth } from "@/hooks/useCipherWealth";
 import { errorNotDeployed } from "./ErrorNotDeployed";
 import { Wallet, Lock, Unlock, RefreshCw, ArrowDownToLine, ArrowUpFromLine } from "lucide-react";
@@ -25,6 +26,9 @@ export const CipherWealthPanel = () => {
 
   const [depositAmount, setDepositAmount] = useState<string>("100");
   const [withdrawAmount, setWithdrawAmount] = useState<string>("50");
+
+  // Ensure Sepolia RPC is healthy (auto-switch to fallback if needed)
+  useEnsureSepoliaRpc({ provider, chainId });
 
   // FHEVM instance
   const {

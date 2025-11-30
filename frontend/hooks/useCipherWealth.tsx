@@ -3,7 +3,7 @@ import type { FhevmInstance } from "../fhevm/fhevmTypes";
 import type { Eip1193Provider, JsonRpcSigner, ContractRunner } from "ethers";
 import { Contract, ethers } from "ethers";
 import { CipherWealth } from "../abi/CipherWealth";
-import { CipherWealthAddresses } from "../abi/CipherWealthAddresses";
+import { getCipherWealthAddress } from "../abi/CipherWealthAddresses";
 import type { GenericStringStorage } from "../fhevm/GenericStringStorage";
 import { FhevmDecryptionSignature } from "../fhevm/FhevmDecryptionSignature";
 
@@ -14,22 +14,28 @@ type CipherWealthInfoType = {
   chainName?: string;
 };
 
+function getChainName(chainId: number): string {
+  if (chainId === 31337) return "hardhat";
+  if (chainId === 11155111) return "sepolia";
+  return `chain-${chainId}`;
+}
+
 function getCipherWealthByChainId(chainId: number | undefined): CipherWealthInfoType {
   if (!chainId) {
     return { abi: CipherWealth.abi };
   }
 
-  const entry =
-    CipherWealthAddresses[chainId.toString() as keyof typeof CipherWealthAddresses];
+  // Use dynamic address resolution from environment variables
+  const address = getCipherWealthAddress(chainId);
 
-  if (!entry || !("address" in entry) || entry.address === ethers.ZeroAddress) {
+  if (!address || address === ethers.ZeroAddress) {
     return { abi: CipherWealth.abi, chainId };
   }
 
   return {
-    address: entry.address as `0x${string}` | undefined,
-    chainId: entry.chainId ?? chainId,
-    chainName: entry.chainName,
+    address,
+    chainId,
+    chainName: getChainName(chainId),
     abi: CipherWealth.abi,
   };
 }

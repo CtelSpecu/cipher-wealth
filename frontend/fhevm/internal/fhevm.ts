@@ -188,10 +188,27 @@ async function resolve(
   // Resolve rpc url
   let rpcUrl = typeof providerOrUrl === "string" ? providerOrUrl : undefined;
 
-  const _mockChains: Record<number, string> = {
-    31337: "http://localhost:8545",
-    ...(mockChains ?? {}),
-  };
+  // Only assume a local Hardhat node exists when running on a local origin.
+  // On hosted environments (e.g., Vercel), avoid probing 127.0.0.1 which
+  // causes noisy connection errors and unnecessary CORS issues.
+  const isLocalHost = (() => {
+    try {
+      if (typeof window === "undefined") return false;
+      const h = window.location.hostname;
+      return h === "localhost" || h === "127.0.0.1";
+    } catch {
+      return false;
+    }
+  })();
+
+  const _mockChains: Record<number, string> = isLocalHost
+    ? {
+        31337: "http://localhost:8545",
+        ...(mockChains ?? {}),
+      }
+    : {
+        ...(mockChains ?? {}),
+      };
 
   // Help Typescript solver here:
   if (Object.hasOwn(_mockChains, chainId)) {

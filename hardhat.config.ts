@@ -22,8 +22,15 @@ const vars = (_vars as any) ?? { get: (_name: string, fallback = "") => fallback
 // Prefer environment variables first; fallback to hardhat vars when useful
 const MNEMONIC: string = vars.get("MNEMONIC", "test test test test test test test test test test test junk");
 const INFURA_API_KEY: string = process.env.INFURA_API_KEY ?? vars.get("INFURA_API_KEY", "");
-const SEPOLIA_RPC_URL: string =
-  process.env.SEPOLIA_RPC_URL ?? (INFURA_API_KEY ? `https://sepolia.infura.io/v3/${INFURA_API_KEY}` : "https://rpc.sepolia.org");
+// Try multiple Sepolia RPC endpoints for reliability
+const SEPOLIA_RPC_CANDIDATES = [
+  process.env.SEPOLIA_RPC_URL,
+  INFURA_API_KEY ? `https://sepolia.infura.io/v3/${INFURA_API_KEY}` : undefined,
+  "https://ethereum-sepolia-rpc.publicnode.com",
+  "https://rpc.ankr.com/eth_sepolia",
+  "https://rpc.sepolia.org",
+].filter(Boolean) as string[];
+const SEPOLIA_RPC_URL: string = SEPOLIA_RPC_CANDIDATES[0] || "https://rpc.sepolia.org";
 const ETHERSCAN_API_KEY: string = process.env.ETHERSCAN_API_KEY ?? vars.get("ETHERSCAN_API_KEY", "");
 const RAW_PRIVATE_KEY: string | undefined = process.env.PRIVATE_KEY || process.env.SEPOLIA_PRIVATE_KEY || undefined;
 const PRIVATE_KEY: string | undefined = RAW_PRIVATE_KEY
